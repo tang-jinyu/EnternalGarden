@@ -1,8 +1,11 @@
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   base,
+  injectedWallet,
   ledgerWallet,
   metaMaskWallet,
+  okxWallet,
+  rabbyWallet,
   rainbowWallet,
   safeWallet,
   walletConnectWallet,
@@ -19,6 +22,9 @@ const showBurnerWallet =
 
 const wallets = [
   metaMaskWallet,
+  rabbyWallet,
+  okxWallet,
+  injectedWallet,
   walletConnectWallet,
   ledgerWallet,
   base,
@@ -46,7 +52,7 @@ export const wagmiConnectors = () => {
     ],
 
     {
-      appName: "scaffold-eth-2",
+      appName: "Eternal Garden",
       projectId: scaffoldConfig.walletConnectProjectId,
     },
   );
