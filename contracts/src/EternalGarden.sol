@@ -30,10 +30,7 @@ contract EternalGarden {
     error GardenStillAlive(uint256 deadline);
 
     event GardenPlanted(
-        address indexed owner,
-        bytes32 indexed cipherHash,
-        bytes32 publicMetaHash,
-        uint64 plantedAt
+        address indexed owner, bytes32 indexed cipherHash, bytes32 publicMetaHash, uint64 plantedAt
     );
     event Heartbeat(address indexed owner, uint32 count, uint64 timestamp);
     event GardenEternallySealed(address indexed owner, address indexed witness, uint64 sealedAt);

@@ -1,0 +1,26 @@
+{
+  "status": "prepared-not-deployed",
+  "network": "monad-testnet",
+  "chainId": 10143,
+  "rpcUrl": "https://testnet-rpc.monad.xyz",
+  "contract": "src/EternalGarden.sol:EternalGarden",
+  "constructor": {
+    "inactivityWindowSeconds": 90,
+    "encodedArgs": "0x000000000000000000000000000000000000000000000000000000000000005a"
+  },
+  "factory": {
+    "name": "CreateX",
+    "address": "0xba5Ed099633D3B313e4D5F7bdc1305d3c28ba5Ed",
+    "verifiedCodeBytes": 11838
+  },
+  "create2": {
+    "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "initCodeBytes": 2518,
+    "initCodeHash": "0x19cec412fd8d64cb591432e9f90ef4ccc27e87417674cd75ad2886f993ed555e",
+    "predictedAddress": "0xb6DfB83aFD957D611d41Ad99Bc8A6f7e214B9BCD",
+    "predictedAddressHadCodeWhenPrepared": false
+  },
+  "preparedAt": "2026-11-21",
+  "transactionHash": null,
+  "verifiedAt": null
+}

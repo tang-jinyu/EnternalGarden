@@ -18,6 +18,11 @@ contract EternalGardenTest is Test {
         garden = new EternalGarden(WINDOW);
     }
 
+    function testConstructorRejectsZeroWindow() public {
+        vm.expectRevert(EternalGarden.InvalidInactivityWindow.selector);
+        new EternalGarden(0);
+    }
+
     function testPlantCreatesGrowingGarden() public {
         vm.prank(owner);
         garden.plant(CIPHER_HASH, META_HASH);
@@ -88,6 +93,11 @@ contract EternalGardenTest is Test {
         garden.sealEternally(owner);
     }
 
+    function testSealRejectsZeroOwner() public {
+        vm.expectRevert(EternalGarden.InvalidOwner.selector);
+        garden.sealEternally(address(0));
+    }
+
     function testAnyoneCanSealExpiredGarden() public {
         _plant();
         vm.warp(garden.deadlineOf(owner) + 1);
@@ -95,9 +105,9 @@ contract EternalGardenTest is Test {
         vm.prank(witness);
         garden.sealEternally(owner);
 
-        EternalGarden.Garden memory sealed = garden.gardenOf(owner);
-        assertEq(uint8(sealed.state), uint8(EternalGarden.GardenState.ETERNAL));
-        assertEq(sealed.sealedAt, block.timestamp);
+        EternalGarden.Garden memory sealedGarden = garden.gardenOf(owner);
+        assertEq(uint8(sealedGarden.state), uint8(EternalGarden.GardenState.ETERNAL));
+        assertEq(sealedGarden.sealedAt, block.timestamp);
         assertFalse(garden.canSeal(owner));
     }
 
@@ -126,6 +136,33 @@ contract EternalGardenTest is Test {
 
         vm.warp(block.timestamp + 1);
         assertTrue(garden.canSeal(owner));
+    }
+
+    function testFuzzHeartbeatBeforeOrAtDeadline(uint64 elapsedSeed) public {
+        _plant();
+        uint256 elapsed = bound(elapsedSeed, 0, WINDOW);
+        vm.warp(block.timestamp + elapsed);
+
+        vm.prank(owner);
+        garden.heartbeat();
+
+        EternalGarden.Garden memory alive = garden.gardenOf(owner);
+        assertEq(alive.heartbeatCount, 2);
+        assertEq(alive.lastHeartbeat, block.timestamp);
+        assertFalse(garden.canSeal(owner));
+    }
+
+    function testFuzzAnyoneCanSealAfterDeadline(uint64 extraTimeSeed) public {
+        _plant();
+        uint256 extraTime = bound(extraTimeSeed, 1, 365 days);
+        vm.warp(garden.deadlineOf(owner) + extraTime);
+
+        vm.prank(witness);
+        garden.sealEternally(owner);
+
+        EternalGarden.Garden memory sealedGarden = garden.gardenOf(owner);
+        assertEq(uint8(sealedGarden.state), uint8(EternalGarden.GardenState.ETERNAL));
+        assertEq(sealedGarden.sealedAt, block.timestamp);
     }
 
     function _plant() internal {
