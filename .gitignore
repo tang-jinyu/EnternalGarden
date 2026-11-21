@@ -1,0 +1,33 @@
+# Dependencies and build output
+node_modules/
+.next/
+dist/
+out/
+cache/
+broadcast/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Foundry local artifacts
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Locally installed official agent skills (workspace tooling, not application source)
+/agent/
+/data/
+/skills/
+

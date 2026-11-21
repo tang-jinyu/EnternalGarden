@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "skills": {
+    "addresses": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "cf8d216d7fd99624e838496610df7af47899d705aacef4bcd6994968c2a7b06a",
+      "installMode": "copy"
+    },
+    "concepts": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "444b5190963dff8eca51e66aaae622eeb9c1a1c41a816770ce6e2e04ecba7612",
+      "installMode": "copy"
+    },
+    "gas": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "7861267eefd86a81f6a231290704825133c670a1b37edfbded1ab37ef51cea9a",
+      "installMode": "copy"
+    },
+    "indexer": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "1dac731d490ef821977b23db72371a6fd4410a521acc2f6197543a811e4ef84b",
+      "installMode": "copy"
+    },
+    "monskill": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "488cd49059c0179d072d19000c3296f7602f57973ef903b9fd2a546809cc0fbc",
+      "installMode": "copy"
+    },
+    "scaffold": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "01c30b736a81229569f1379f64cbc40b766a40c4dacaef6bea4b08c2ba7711a1",
+      "installMode": "copy"
+    },
+    "tooling-and-infra": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "028802b2098577f3bbed4dcdcef28379f7e60aee70c4de41e1f47348b632eba2",
+      "installMode": "copy"
+    },
+    "wallet-integration": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "0a70124ca77e913d0ccbc942630b1d86b82ddc7ee83e5e8b6e40d666eae8d1d3",
+      "installMode": "copy"
+    },
+    "why-monad": {
+      "source": "C:/Users/27882/AppData/Local/Temp/monskills-main-20261121/monskills-main",
+      "sourceType": "local",
+      "computedHash": "67608c8e6f66ba2dd4bd6e6cc14bd5273d770325fc7504a3d9904582d9b07cc3",
+      "installMode": "copy"
+    }
+  }
+}
