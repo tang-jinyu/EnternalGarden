@@ -27,7 +27,5 @@ Thumbs.db
 *.log
 
 # Locally installed official agent skills (workspace tooling, not application source)
-/agent/
-/data/
-/skills/
+**/skills/
 
