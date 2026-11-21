@@ -1,0 +1,16 @@
+{
+  "name": "@eternal-garden/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "forge install --no-git foundry-rs/forge-std",
+    "format": "forge fmt",
+    "format:check": "forge fmt --check",
+    "build": "forge build",
+    "test": "forge test -vvv",
+    "snapshot": "forge snapshot"
+  },
+  "devDependencies": {
+    "@foundry-rs/forge": "1.7.1"
+  }
+}

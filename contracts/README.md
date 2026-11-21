@@ -2,17 +2,21 @@
 
 Foundry project for the Eternal Garden commitment and heartbeat state machine.
 
-## Planned commands
+## Commands
 
 ```bash
-forge fmt --check
-forge build
-forge test -vvv
-forge snapshot
+npm install
+npm run setup
+npm run format:check
+npm run build
+npm test
+npm run snapshot
 ```
 
-Foundry is not currently installed in the detected Windows environment. The source and tests are
-prepared for Foundry, but M2 cannot be marked complete until the commands above pass.
+The repository declares a project-local `@foundry-rs/forge` package so the test suite does not need
+a machine-wide Foundry installation. `npm run setup` installs `forge-std` into the ignored `lib/`
+directory. In this environment the native npm binary download did not finish within the command
+window, so the Foundry suite still needs to be executed before M2 can be accepted.
 
 ## Deployment variants
 

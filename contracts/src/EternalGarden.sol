@@ -73,9 +73,7 @@ contract EternalGarden {
         if (block.timestamp > deadline) revert GardenExpired(deadline);
 
         uint64 timestamp = uint64(block.timestamp);
-        unchecked {
-            garden.heartbeatCount += 1;
-        }
+        garden.heartbeatCount += 1;
         garden.lastHeartbeat = timestamp;
 
         emit Heartbeat(msg.sender, garden.heartbeatCount, timestamp);
