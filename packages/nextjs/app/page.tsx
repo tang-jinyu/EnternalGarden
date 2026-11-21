@@ -33,7 +33,7 @@ const Home: NextPage = () => {
           </h1>
           <p className="text-center mt-4 text-lg">
             内容只在你的设备上加密。链上只有承诺、心跳与封存状态——超时之后，任何人都能见证花开，
-            但没有人（包括我们自己）能读到秘密。
+            协议也始终没有读取秘密所需的密钥。
           </p>
           <div className="flex justify-center items-center space-x-2 flex-col">
             <p className="my-2 font-medium">Connected Address:</p>
@@ -73,7 +73,7 @@ const Home: NextPage = () => {
           </div>
 
           <p className="text-center mt-10 text-sm opacity-70">
-            目标网络：Monad Testnet（Chain ID 10143）。协议从未持有内容或解密能力——这不是承诺，是架构。
+            目标网络：Monad Testnet（Chain ID 10143）。协议从未持有内容或解密密钥——这是合约与客户端的边界。
           </p>
         </div>
       </div>

@@ -5,22 +5,31 @@ import { useParams } from "next/navigation";
 import { Address } from "@scaffold-ui/components";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
+import {
+  useDeployedContractInfo,
+  useScaffoldReadContract,
+  useScaffoldWriteContract,
+  useTargetNetwork,
+} from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 const STATE_LABEL = ["尚未种植", "生长中 🌱", "已永恒封存 🌼"] as const;
 
-function growthStage(count: bigint): string {
-  if (count >= 10n) return "🌳🌸🌼🌷";
-  if (count >= 6n) return "🌿🌷🌼";
-  if (count >= 3n) return "🌿🌱";
+function growthStage(count: number): string {
+  if (count >= 10) return "🌳🌸🌼🌷";
+  if (count >= 6) return "🌿🌷🌼";
+  if (count >= 3) return "🌿🌱";
   return "🌱";
 }
 
 const GardenView: NextPage = () => {
   const params = useParams<{ address: string }>();
   const gardenAddress = params?.address as `0x${string}` | undefined;
-  const { address: connectedAddress } = useAccount();
+  const { address: connectedAddress, chain, isConnected } = useAccount();
+  const { targetNetwork } = useTargetNetwork();
+  const { data: deployedContract, isLoading: isContractLoading } = useDeployedContractInfo({
+    contractName: "EternalGarden",
+  });
   const [now, setNow] = useState(0);
 
   const { data: garden, refetch } = useScaffoldReadContract({
@@ -39,7 +48,9 @@ const GardenView: NextPage = () => {
     args: [gardenAddress],
   });
 
-  const { writeContractAsync, isPending } = useScaffoldWriteContract({ contractName: "EternalGarden" });
+  const { writeContractAsync, isPending, isMining } = useScaffoldWriteContract({ contractName: "EternalGarden" });
+  const isWrongNetwork = isConnected && chain?.id !== targetNetwork.id;
+  const isTransactionBusy = isPending || isMining;
 
   useEffect(() => {
     const update = () => setNow(Math.floor(Date.now() / 1000));
@@ -55,22 +66,28 @@ const GardenView: NextPage = () => {
   const remaining = deadline ? Number(deadline) - now : 0;
 
   const handleHeartbeat = async () => {
+    if (!deployedContract || isWrongNetwork) return;
     try {
-      await writeContractAsync({ functionName: "heartbeat" });
+      const transactionHash = await writeContractAsync({ functionName: "heartbeat" });
+      if (!transactionHash) return;
+
       notification.success("💧 心跳已上链，花园继续生长");
       await refetch();
     } catch (error) {
-      notification.error(error instanceof Error ? error.message : "心跳交易失败");
+      notification.error(getParsedError(error));
     }
   };
 
   const handleSeal = async () => {
+    if (!deployedContract || isWrongNetwork) return;
     try {
-      await writeContractAsync({ functionName: "sealEternally", args: [gardenAddress] });
+      const transactionHash = await writeContractAsync({ functionName: "sealEternally", args: [gardenAddress] });
+      if (!transactionHash) return;
+
       notification.success("🌼 花园已被见证，进入永恒封存");
       await refetch();
     } catch (error) {
-      notification.error(error instanceof Error ? error.message : "封存交易失败");
+      notification.error(getParsedError(error));
     }
   };
 
@@ -82,8 +99,16 @@ const GardenView: NextPage = () => {
           <Address address={gardenAddress} />
         </div>
 
+        <div className={`alert mt-5 text-sm ${deployedContract ? "alert-success" : "alert-info"}`}>
+          <span>
+            当前目标网络：{targetNetwork.name}。{isContractLoading && "正在检查合约…"}
+            {!isContractLoading && deployedContract && `合约可用：${deployedContract.address}`}
+            {!isContractLoading && !deployedContract && "该网络尚未部署 EternalGarden 合约。"}
+          </span>
+        </div>
+
         <div className="text-center text-7xl my-8">
-          {state === 2 ? "🌼🌼🌼" : growthStage(garden?.heartbeatCount ?? 0n)}
+          {state === 2 ? "🌼🌼🌼" : growthStage(garden?.heartbeatCount ?? 0)}
         </div>
 
         <div className="card bg-base-100 border border-base-300 shadow-xl">
@@ -105,14 +130,22 @@ const GardenView: NextPage = () => {
         {state === 1 && (
           <div className="flex flex-col items-center gap-3 mt-8">
             {isOwner ? (
-              <button className="btn btn-primary" onClick={handleHeartbeat} disabled={isPending}>
-                {isPending ? "确认中…" : "💧 我还在（心跳）"}
+              <button
+                className="btn btn-primary"
+                onClick={handleHeartbeat}
+                disabled={!deployedContract || isWrongNetwork || isTransactionBusy}
+              >
+                {isTransactionBusy ? "等待链上确认…" : "💧 我还在（心跳）"}
               </button>
             ) : (
               <p className="text-sm opacity-70">只有花园主人可以浇水心跳。</p>
             )}
             {canSeal ? (
-              <button className="btn btn-secondary" onClick={handleSeal} disabled={isPending}>
+              <button
+                className="btn btn-secondary"
+                onClick={handleSeal}
+                disabled={!deployedContract || isWrongNetwork || isTransactionBusy}
+              >
                 🌼 见证花开（任何人可调用）
               </button>
             ) : (
@@ -123,6 +156,12 @@ const GardenView: NextPage = () => {
 
         {state === 2 && (
           <p className="text-center mt-8 text-lg">这座花园已进入不可逆的永恒封存。秘密存在过——这已被永远证明。</p>
+        )}
+
+        {isWrongNetwork && (
+          <p className="text-sm text-error text-center mt-4">
+            当前钱包网络为 {chain?.name ?? "未知网络"}，请切换到 {targetNetwork.name} 后再提交交易。
+          </p>
         )}
       </div>
     </div>

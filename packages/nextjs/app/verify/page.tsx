@@ -6,8 +6,6 @@ import type { NextPage } from "next";
 import { isAddress } from "viem";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
-const toHex = (bytes: Uint8Array) => `0x${Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("")}`;
-
 function OnchainHash({ address }: { address: `0x${string}` }) {
   const { data: garden } = useScaffoldReadContract({
     contractName: "EternalGarden",

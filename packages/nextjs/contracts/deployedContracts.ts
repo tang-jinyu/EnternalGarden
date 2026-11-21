@@ -4,6 +4,300 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  10143: {
+    EternalGarden: {
+      address: "0x878f38aa30b87b946af7cb2d26c9ae068cd2256a",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "inactivityWindow_",
+              type: "uint64",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "EmptyCipherHash",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "GardenAlreadyExists",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+          ],
+          name: "GardenExpired",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "GardenNotGrowing",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+          ],
+          name: "GardenStillAlive",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "InvalidInactivityWindow",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "InvalidOwner",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "witness",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint64",
+              name: "sealedAt",
+              type: "uint64",
+            },
+          ],
+          name: "GardenEternallySealed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "cipherHash",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "publicMetaHash",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint64",
+              name: "plantedAt",
+              type: "uint64",
+            },
+          ],
+          name: "GardenPlanted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint32",
+              name: "count",
+              type: "uint32",
+            },
+            {
+              indexed: false,
+              internalType: "uint64",
+              name: "timestamp",
+              type: "uint64",
+            },
+          ],
+          name: "Heartbeat",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "canSeal",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "deadlineOf",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "gardenOf",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "bytes32",
+                  name: "cipherHash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "publicMetaHash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint64",
+                  name: "plantedAt",
+                  type: "uint64",
+                },
+                {
+                  internalType: "uint64",
+                  name: "lastHeartbeat",
+                  type: "uint64",
+                },
+                {
+                  internalType: "uint64",
+                  name: "sealedAt",
+                  type: "uint64",
+                },
+                {
+                  internalType: "uint32",
+                  name: "heartbeatCount",
+                  type: "uint32",
+                },
+                {
+                  internalType: "enum EternalGarden.GardenState",
+                  name: "state",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct EternalGarden.Garden",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "heartbeat",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "inactivityWindow",
+          outputs: [
+            {
+              internalType: "uint64",
+              name: "",
+              type: "uint64",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "cipherHash",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "publicMetaHash",
+              type: "bytes32",
+            },
+          ],
+          name: "plant",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "sealEternally",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 81531554,
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
