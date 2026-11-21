@@ -14,6 +14,7 @@ heartbeats, timestamps and the one-way garden state.
 - `contracts/` — original Foundry project, kept as verified reference until the Hardhat chain fully ships
 - `开发记录.md` — product specification, security boundaries, milestones and acceptance log (authoritative)
 - `开发日志2.md` — Scaffold-ETH 2 migration audit trail
+- `项目介绍.md` — Chinese product, architecture, privacy boundary and demo guide
 - `.monskills` — Monad target metadata required by the official scaffold workflow
 
 ## Commands (Yarn 4 workspaces)
@@ -31,8 +32,11 @@ yarn start                            # Next.js dev server
 
 ## Current status
 
-P0 contract and the local encryption module are implemented and tested on both the legacy Foundry
-chain (14/14 + fuzz + gas snapshot) and the Scaffold-ETH 2 Hardhat chain (14/14). The frontend
-pages are wired to the real contract via SE-2 hooks and activate once the testnet deployment
-lands. M3 (deploy + verify on Monad Testnet) is pending user-side wallet/session setup.
-See [`开发记录.md`](./开发记录.md) for the authoritative status and security boundaries.
+The Eternal Garden contract, local encryption module, frontend pages and Monad Testnet deployment
+are complete. The current deployment uses a 90-second inactivity window for the hackathon demo;
+the same address can start a new cycle after its previous garden is eternally sealed. The v1
+capsule is an irreversible sealing / proof-of-existence format and does not provide a decryption
+or key-recovery path.
+
+See [`项目介绍.md`](./项目介绍.md) for the product and demo guide, and
+[`开发记录.md`](./开发记录.md) for the authoritative engineering log and acceptance records.
