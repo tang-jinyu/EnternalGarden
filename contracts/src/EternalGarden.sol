@@ -48,15 +48,18 @@ contract EternalGarden {
         if (cipherHash == bytes32(0)) revert EmptyCipherHash();
 
         Garden storage garden = gardens[msg.sender];
-        if (garden.state != GardenState.NONE) revert GardenAlreadyExists();
+        if (garden.state == GardenState.GROWING) revert GardenAlreadyExists();
 
         uint64 timestamp = uint64(block.timestamp);
-        garden.cipherHash = cipherHash;
-        garden.publicMetaHash = publicMetaHash;
-        garden.plantedAt = timestamp;
-        garden.lastHeartbeat = timestamp;
-        garden.heartbeatCount = 1;
-        garden.state = GardenState.GROWING;
+        gardens[msg.sender] = Garden({
+            cipherHash: cipherHash,
+            publicMetaHash: publicMetaHash,
+            plantedAt: timestamp,
+            lastHeartbeat: timestamp,
+            sealedAt: 0,
+            heartbeatCount: 1,
+            state: GardenState.GROWING
+        });
 
         emit GardenPlanted(msg.sender, cipherHash, publicMetaHash, timestamp);
         emit Heartbeat(msg.sender, 1, timestamp);

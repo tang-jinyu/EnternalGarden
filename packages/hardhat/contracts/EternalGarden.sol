@@ -29,9 +29,7 @@ contract EternalGarden {
     error GardenExpired(uint256 deadline);
     error GardenStillAlive(uint256 deadline);
 
-    event GardenPlanted(
-        address indexed owner, bytes32 indexed cipherHash, bytes32 publicMetaHash, uint64 plantedAt
-    );
+    event GardenPlanted(address indexed owner, bytes32 indexed cipherHash, bytes32 publicMetaHash, uint64 plantedAt);
     event Heartbeat(address indexed owner, uint32 count, uint64 timestamp);
     event GardenEternallySealed(address indexed owner, address indexed witness, uint64 sealedAt);
 
@@ -48,15 +46,18 @@ contract EternalGarden {
         if (cipherHash == bytes32(0)) revert EmptyCipherHash();
 
         Garden storage garden = gardens[msg.sender];
-        if (garden.state != GardenState.NONE) revert GardenAlreadyExists();
+        if (garden.state == GardenState.GROWING) revert GardenAlreadyExists();
 
         uint64 timestamp = uint64(block.timestamp);
-        garden.cipherHash = cipherHash;
-        garden.publicMetaHash = publicMetaHash;
-        garden.plantedAt = timestamp;
-        garden.lastHeartbeat = timestamp;
-        garden.heartbeatCount = 1;
-        garden.state = GardenState.GROWING;
+        gardens[msg.sender] = Garden({
+            cipherHash: cipherHash,
+            publicMetaHash: publicMetaHash,
+            plantedAt: timestamp,
+            lastHeartbeat: timestamp,
+            sealedAt: 0,
+            heartbeatCount: 1,
+            state: GardenState.GROWING
+        });
 
         emit GardenPlanted(msg.sender, cipherHash, publicMetaHash, timestamp);
         emit Heartbeat(msg.sender, 1, timestamp);
@@ -104,7 +105,7 @@ contract EternalGarden {
 
     function canSeal(address owner) external view returns (bool) {
         Garden storage garden = gardens[owner];
-        return garden.state == GardenState.GROWING
-            && block.timestamp > uint256(garden.lastHeartbeat) + inactivityWindow;
+        return
+            garden.state == GardenState.GROWING && block.timestamp > uint256(garden.lastHeartbeat) + inactivityWindow;
     }
 }

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   10143: {
     EternalGarden: {
-      address: "0x878f38aa30b87b946af7cb2d26c9ae068cd2256a",
+      address: "0x848118da99a88b93f81f79fc2f8ef5b9a7ea87e9",
       abi: [
         {
           inputs: [
@@ -295,7 +295,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 81531554,
+      deployedOnBlock: 81557161,
     },
   },
 } as const;

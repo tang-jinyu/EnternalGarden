@@ -43,12 +43,37 @@ contract EternalGardenTest is Test {
         garden.plant(bytes32(0), META_HASH);
     }
 
-    function testPlantRejectsDuplicateGarden() public {
+    function testPlantRejectsReplacingGrowingGarden() public {
         _plant();
 
         vm.expectRevert(EternalGarden.GardenAlreadyExists.selector);
         vm.prank(owner);
         garden.plant(keccak256("another-capsule"), META_HASH);
+    }
+
+    function testPlantStartsFreshCycleAfterEternalSeal() public {
+        _plant();
+        vm.warp(garden.deadlineOf(owner) + 1);
+
+        vm.prank(witness);
+        garden.sealEternally(owner);
+
+        bytes32 nextCipherHash = keccak256("next-encrypted-capsule");
+        bytes32 nextMetaHash = keccak256("next-public-metadata");
+        vm.warp(block.timestamp + 10 seconds);
+
+        vm.prank(owner);
+        garden.plant(nextCipherHash, nextMetaHash);
+
+        EternalGarden.Garden memory replanted = garden.gardenOf(owner);
+        assertEq(replanted.cipherHash, nextCipherHash);
+        assertEq(replanted.publicMetaHash, nextMetaHash);
+        assertEq(replanted.plantedAt, block.timestamp);
+        assertEq(replanted.lastHeartbeat, block.timestamp);
+        assertEq(replanted.sealedAt, 0);
+        assertEq(replanted.heartbeatCount, 1);
+        assertEq(uint8(replanted.state), uint8(EternalGarden.GardenState.GROWING));
+        assertEq(garden.deadlineOf(owner), block.timestamp + WINDOW);
     }
 
     function testHeartbeatRefreshesDeadlineAndIncrementsCount() public {

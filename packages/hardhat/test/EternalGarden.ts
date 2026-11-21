@@ -53,7 +53,7 @@ describe("EternalGarden", function () {
       ).to.be.revertedWithCustomError(eternalGarden, "EmptyCipherHash");
     });
 
-    it("rejects a duplicate garden", async function () {
+    it("rejects replacing a garden while it is GROWING", async function () {
       const { eternalGarden } = await networkHelpers.loadFixture(deployFixture);
       const [, owner] = await ethers.getSigners();
 
@@ -62,6 +62,35 @@ describe("EternalGarden", function () {
         eternalGarden,
         "GardenAlreadyExists",
       );
+    });
+
+    it("starts a fresh cycle after the previous garden is ETERNAL", async function () {
+      const { eternalGarden } = await networkHelpers.loadFixture(deployFixture);
+      const [, owner, witness] = await ethers.getSigners();
+      const nextCipherHash = id("next-encrypted-capsule");
+      const nextMetaHash = id("next-public-metadata");
+
+      await eternalGarden.connect(owner).plant(CIPHER_HASH, META_HASH);
+      const firstDeadline = await eternalGarden.deadlineOf(owner.address);
+      await networkHelpers.time.increaseTo(Number(firstDeadline) + 1);
+      await eternalGarden.connect(witness).sealEternally(owner.address);
+
+      const latest = BigInt(await networkHelpers.time.latest());
+      await expect(eternalGarden.connect(owner).plant(nextCipherHash, nextMetaHash))
+        .to.emit(eternalGarden, "GardenPlanted")
+        .withArgs(owner.address, nextCipherHash, nextMetaHash, latest + 1n)
+        .and.to.emit(eternalGarden, "Heartbeat")
+        .withArgs(owner.address, 1, latest + 1n);
+
+      const replanted = await eternalGarden.gardenOf(owner.address);
+      expect(replanted.cipherHash).to.equal(nextCipherHash);
+      expect(replanted.publicMetaHash).to.equal(nextMetaHash);
+      expect(replanted.plantedAt).to.equal(latest + 1n);
+      expect(replanted.lastHeartbeat).to.equal(latest + 1n);
+      expect(replanted.sealedAt).to.equal(0);
+      expect(replanted.heartbeatCount).to.equal(1);
+      expect(replanted.state).to.equal(1n); // GROWING
+      expect(await eternalGarden.deadlineOf(owner.address)).to.equal(latest + 1n + BigInt(WINDOW));
     });
   });
 
@@ -131,7 +160,7 @@ describe("EternalGarden", function () {
         // offset must stay below the window; the ==deadline case has its own test.
         const offset = Math.floor(Math.random() * WINDOW);
         await eternalGarden.connect(owner).plant(id(`capsule-${i}`), META_HASH);
-        await networkHelpers.time.increase(offset);
+        if (offset > 0) await networkHelpers.time.increase(offset);
 
         await eternalGarden.connect(owner).heartbeat();
         expect((await eternalGarden.gardenOf(owner.address)).heartbeatCount).to.equal(2);

@@ -129,7 +129,9 @@ const Plant: NextPage = () => {
         )}
 
         {connectedAddress && (
-          <p className="text-xs opacity-60 mt-6">你的花园地址：{connectedAddress}（一个地址只能种一株）</p>
+          <p className="text-xs opacity-60 mt-6">
+            你的花园地址：{connectedAddress}（当前周期封存后，可用同一地址开启新一轮）
+          </p>
         )}
       </div>
     </div>
